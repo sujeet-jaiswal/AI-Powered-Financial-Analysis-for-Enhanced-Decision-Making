@@ -1,0 +1,27 @@
+Four HTML pages :
+Home,Contact,Products,About
+HTML Tags Used:
+1. <nav> - Navigation bar
+2. <header> - Page header
+3. <section> - Container for page sections
+4. <footer> - Footer section
+5. <ul> - Unordered list
+6. <li> - List item
+7. <form> - HTML form
+8. <input> - Input fields
+9. <button> - Buttons
+10. <label> - Form labels
+
+CSS Properties:
+1. font-family - For text styling
+2. color - For text color
+3. margin - For spacing
+4. padding - For spacing
+5. background-color - For coloring elements
+
+JavaScript:
+Used to display alerts with the 'Learn More' button.
+
+Bootstrap:
+Used for navigation, buttons, and responsive layout.
+
