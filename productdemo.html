@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weapon Detection Demo</title>
+    <style>
+        /* Your existing styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        header {
+            background-color: #1f2937;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        main {
+            padding: 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
+        .demo-section {
+            margin-bottom: 40px;
+        }
+        .demo-section h2 {
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+        .demo-section p {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .demo-section video, .demo-section canvas {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            margin: 20px auto;
+            border: 2px solid #1f2937;
+            border-radius: 10px;
+        }
+        footer {
+            background-color: #1f2937;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        footer p {
+            margin: 0;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Weapon Detection System</h1>
+        <p>Advanced Detection of Explosives, Drones, and Nuclear Materials</p>
+    </header>
+
+    <main>
+        <section class="demo-section">
+            <h2>Detection Categories</h2>
+            <p>This demo showcases the detection of explosives and drones using advanced computer vision techniques. The system is trained to differentiate between these two categories for improved situational awareness and security monitoring.</p>
+        </section>
+
+        <section class="demo-section">
+            <h2>Live Webcam Detection</h2>
+            <div id="webcam-container"></div>
+            <div id="label-container"></div>
+            <button type="button" onclick="init()">Start</button>
+        </section>
+
+        <section class="demo-section">
+            <h2>Why Choose Our Technology?</h2>
+            <p>Our weapon detection system is designed for real-time monitoring, leveraging state-of-the-art AI and machine learning models. It is ideal for deployment in high-security zones, warzones, and border areas to ensure safety and proactive threat identification.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Advanced Defense Solutions. All rights reserved.</p>
+    </footer>
+
+    <!-- Include TensorFlow.js and Teachable Machine libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+    <script type="text/javascript">
+        // The link to your model provided by Teachable Machine export panel
+        const URL = "https://teachablemachine.withgoogle.com/models/4VJSz9bRY/";
+
+        let model, webcam, labelContainer, maxPredictions;
+
+        // Load the image model and setup the webcam
+        async function init() {
+            const modelURL = URL + "model.json";
+            const metadataURL = URL + "metadata.json";
+
+            // Load the model and metadata
+            model = await tmImage.load(modelURL, metadataURL);
+            maxPredictions = model.getTotalClasses();
+
+            // Setup a webcam
+            const flip = true; // Whether to flip the webcam
+            webcam = new tmImage.Webcam(200, 200, flip); // Width, height, flip
+            await webcam.setup(); // Request access to the webcam
+            await webcam.play();
+            window.requestAnimationFrame(loop);
+
+            // Append elements to the DOM
+            document.getElementById("webcam-container").appendChild(webcam.canvas);
+            labelContainer = document.getElementById("label-container");
+            for (let i = 0; i < maxPredictions; i++) { // And class labels
+                labelContainer.appendChild(document.createElement("div"));
+            }
+        }
+
+        async function loop() {
+            webcam.update(); // Update the webcam frame
+            await predict();
+            window.requestAnimationFrame(loop);
+        }
+
+        // Run the webcam image through the image model
+        async function predict() {
+            // Predict can take in an image, video or canvas html element
+            const prediction = await model.predict(webcam.canvas);
+            for (let i = 0; i < maxPredictions; i++) {
+                const classPrediction =
+                    prediction[i].className + ": " + prediction[i].probability.toFixed(2)*100;
+                labelContainer.childNodes[i].innerHTML = classPrediction;
+            }
+        }
+    </script>
+</body>
+</html>
